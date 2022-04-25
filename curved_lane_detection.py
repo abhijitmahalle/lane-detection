@@ -1,16 +1,6 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
 #Import necessary libraries
 import cv2 
 import numpy as np
-
-
-# In[2]:
-
 
 #Function to preprocess the image to detect yellow and white lanes
 def preprocessing(img):
@@ -23,10 +13,6 @@ def preprocessing(img):
     yellow_mask = cv2.inRange(hsv, lower_yellow, upper_yellow)
     mask = cv2.bitwise_or(white_mask, yellow_mask)
     return mask
-
-
-# In[3]:
-
 
 #Function that defines the polygon region of interest
 def regionOfInterest(img, polygon):
@@ -52,29 +38,17 @@ def regionOfInterest(img, polygon):
     masked_img = np.multiply(mask, img)
     return masked_img
 
-
-# In[4]:
-
-
 #Function that warps the image
 def warp(img, source_points, destination_points, destn_size):
     matrix = cv2.getPerspectiveTransform(source_points, destination_points)
     warped_img = cv2.warpPerspective(img, matrix, destn_size)
     return warped_img
 
-
-# In[5]:
-
-
 #Function that unwarps the image
 def unwarp(img, source_points, destination_points, source_size):
     matrix = cv2.getPerspectiveTransform(destination_points, source_points)
     unwarped_img = cv2.warpPerspective(img, matrix, source_size)
     return unwarped_img
-
-
-# In[6]:
-
 
 #Function that gives the left fit and right fit curves for the lanes in birdeye's view
 def fitCurve(img):
@@ -120,10 +94,6 @@ def fitCurve(img):
 
     return left_fit, right_fit
 
-
-# In[7]:
-
-
 #Function that give pixel location of points through which the curves of detected lanes passes
 def findPoints(img_shape, left_fit, right_fit):
     ploty = np.linspace(0, img_shape[0]-1, img_shape[0])
@@ -133,20 +103,12 @@ def findPoints(img_shape, left_fit, right_fit):
     pts_right = np.array([np.flipud(np.transpose(np.vstack([right_fitx, ploty])))])
     return pts_left, pts_right
 
-
-# In[8]:
-
-
 #Function that fills the space between the detected lane curves
 def fillCurves(img_shape, pts_left, pts_right):
     pts = np.hstack((pts_left, pts_right))
     img = np.zeros((img_shape[0], img_shape[1], 3), dtype='uint8')
     cv2.fillPoly(img, np.int_([pts]), (0,0, 255))
     return img
-
-
-# In[9]:
-
 
 #Function that converts a one channel image into a three channel image
 def oneToThreeChannel(binary):
@@ -156,20 +118,12 @@ def oneToThreeChannel(binary):
     img[:,:,2] = binary
     return img
 
-
-# In[10]:
-
-
 #Function that draws the curves of detected lanes on an image
 def drawCurves(img, pts_left, pts_right):
     img = oneToThreeChannel(img)
     cv2.polylines(img, np.int32([pts_left]), isClosed=False, color=(0,0,255), thickness=10)
     cv2.polylines(img, np.int32([pts_right]), isClosed=False, color=(0,255,255), thickness=10)
     return img
-
-
-# In[11]:
-
 
 #Function that concatenates various images to one image
 def concatenate(img1, img2, img3, img4, img5):
@@ -186,10 +140,6 @@ def concatenate(img1, img2, img3, img4, img5):
     result = np.concatenate((result, img5), axis = 0)
     return result
 
-
-# In[12]:
-
-
 #Function that outputs the radius of curvature
 def radiusOfCurvature(img, left_fit, right_fit):
     y_eval = img.shape[0]/2
@@ -197,10 +147,6 @@ def radiusOfCurvature(img, left_fit, right_fit):
     right_radius = ((1 + (2*right_fit[0]*y_eval + right_fit[1])**2)**1.5) / (2*right_fit[0])
     avg_radius = (left_radius+right_radius)/2 
     return round(left_radius,2), round(right_radius,2), round(avg_radius,2)
-
-
-# In[13]:
-
 
 #Function that outputs image containing radius value
 def informationWindow(left_radius, right_radius, radius):
@@ -216,10 +162,6 @@ def informationWindow(left_radius, right_radius, radius):
     window = cv2.putText(window, text3, (50,150), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255,0,0), 2, cv2.LINE_AA)
     return window
 
-
-# In[14]:
-
-
 #Function that predicts turn
 def addTurnInfo(img, radius):
     if radius >= 10000:
@@ -234,22 +176,14 @@ def addTurnInfo(img, radius):
     
     return img
 
-
-# In[15]:
-
-
 #Function that adds extra blank space in front of the image
 def setOffset(img, offset):
     blank = np.zeros((img.shape[0], offset, 3), dtype = 'uint8')
     img = np.concatenate((blank, img), axis = 1)
     return img
 
-
-# In[16]:
-
-
-video = cv2.VideoCapture("challenge.mp4")
-out = cv2.VideoWriter('curve_lane_detection.avi',cv2.VideoWriter_fourcc(*'XVID'), 25, (1280,720))
+video = cv2.VideoCapture("data/curved_lane_detection.mp4")
+out = cv2.VideoWriter('results/curve_lane_detection.avi',cv2.VideoWriter_fourcc(*'XVID'), 25, (1280,720))
 print("Generating video output...\n")
 
 while True:
@@ -284,10 +218,3 @@ while True:
     out.write(result)
 out.release()
 print("Video output generated.\n")
-
-
-# In[ ]:
-
-
-
-
