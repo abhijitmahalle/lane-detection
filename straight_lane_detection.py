@@ -122,8 +122,8 @@ def lineDetection(img, masked_img, solid_line_previous, dashed_line_previous):
 # In[7]:
 
 
-video = cv2.VideoCapture("whiteline.mp4")
-out = cv2.VideoWriter('lane_detection.avi',cv2.VideoWriter_fourcc(*'XVID'), 25, (960,540))
+video = cv2.VideoCapture("data/straight_lane_detection.mp4")
+out = cv2.VideoWriter('results/straight_lane_detection.avi',cv2.VideoWriter_fourcc(*'XVID'), 25, (960,540))
 solid_line_previous = None
 dashed_line_previous = None
 print("Generating video output...\n")
