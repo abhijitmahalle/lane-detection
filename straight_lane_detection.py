@@ -1,18 +1,8 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
 #Import necessary libraries
 import cv2 
 import numpy as np
 import math
 import copy
-
-
-# In[2]:
-
 
 #Function to perform image preprocessing
 def preprocessing(img):
@@ -20,10 +10,6 @@ def preprocessing(img):
     gblur = cv2.GaussianBlur(gray,(5, 5),0)
     thresh = cv2.threshold(gblur,150,255,cv2.THRESH_BINARY)[1]
     return thresh
-
-
-# In[3]:
-
 
 #Function that defines the polygonal region of interest
 def regionOfInterest(img, polygon):
@@ -49,19 +35,11 @@ def regionOfInterest(img, polygon):
     masked_img = np.multiply(mask, img)
     return masked_img
 
-
-# In[4]:
-
-
 #Function to find slope and y-intercept of a line given two co-ordinates of a point
 def slopeIntercept(line):
     m = (line[1][1]-line[0][1])/(line[1][0]-line[0][0])
     b = line[1][1] - m*line[1][0]
     return m, b
-
-
-# In[5]:
-
 
 #Function to remove multiple lines detected on the same lane side
 def removeCloseLines(linelist, m):
@@ -73,10 +51,6 @@ def removeCloseLines(linelist, m):
             linelist_copy.remove(line)
             
     return linelist_copy
-
-
-# In[6]:
-
 
 #Function that draws lines on the image
 def lineDetection(img, masked_img, solid_line_previous, dashed_line_previous):
@@ -118,10 +92,6 @@ def lineDetection(img, masked_img, solid_line_previous, dashed_line_previous):
     
     return detected_line, solid_line, dashed_line
 
-
-# In[7]:
-
-
 video = cv2.VideoCapture("data/straight_lane_detection.mp4")
 out = cv2.VideoWriter('results/straight_lane_detection.avi',cv2.VideoWriter_fourcc(*'XVID'), 25, (960,540))
 solid_line_previous = None
@@ -143,10 +113,3 @@ while True:
 
 out.release()
 print("Video output generated.\n")
-
-
-# In[ ]:
-
-
-
-
