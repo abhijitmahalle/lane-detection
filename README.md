@@ -7,4 +7,4 @@ Run the following command in the terminal:
 python straight_lane_detection.py  
 python curved_lane_detection.py
 ```
-![grab-landing-page](https://github.com/abhijitmahalle/lane_detection/blob/master/gif/curved_lane_detection.gif)
+![](https://github.com/abhijitmahalle/lane_detection/blob/master/gif/curved_lane_detection.gif)
